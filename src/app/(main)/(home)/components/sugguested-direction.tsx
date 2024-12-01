@@ -1,0 +1,71 @@
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFilter,
+  faLocationDot,
+  faMoneyBill,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
+
+interface Prop {
+  name: string;
+  address: string;
+  classify: string;
+  score: number;
+  price: number;
+  cover: string;
+}
+
+const SugDirection = (prop: Prop) => {
+  return (
+    <a
+      className="transition-all duration-200 w-72 rounded my-4 hover:scale-105"
+      href={`/information?title=${prop.name}&type=direction`}
+    >
+      <div className="w-64 h-64 overflow-hidden mx-auto rounded-md">
+        <img
+          className="w-full h-full object-cover rounded-md"
+          src={prop.cover}
+          alt={prop.name}
+        />
+      </div>
+      <div>
+        <div className="text-xl mx-4 mb-4 mt-8">
+          <h1 className="font-bold mb-2 truncate">{prop.name}</h1>
+          <div className="mb-2">
+            <FontAwesomeIcon
+              icon={faLocationDot}
+              className="w-4 mt-1 mr-2 inline float-left text-green-300"
+            />
+            <p className="truncate">{prop.address}</p>
+          </div>
+          <div className="mb-2">
+            <FontAwesomeIcon
+              icon={faFilter}
+              className="w-4 mt-1 mr-2 inline float-left text-green-300"
+            />
+            <p className="block truncate">{prop.classify}</p>
+          </div>
+        </div>
+        <div className="flex justify-between items-center px-2 pb-2">
+          <div>
+            <FontAwesomeIcon
+              icon={faStar}
+              className="w-4 mr-2 inline-block text-green-300"
+            />
+            <p className="inline-block">{prop.score}/5</p>
+          </div>
+          <div>
+            <FontAwesomeIcon
+              icon={faMoneyBill}
+              className="w-4 mr-2 inline-block text-green-300"
+            />
+            <p className="inline-block">{prop.price}đ</p>
+          </div>
+        </div>
+      </div>
+    </a>
+  );
+};
+
+export default SugDirection;
