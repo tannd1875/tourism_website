@@ -1,8 +1,8 @@
 import React from "react";
 
-interface Prop {
+type Prop = {
   count: number;
-}
+};
 
 const Heading = ({ count }: Prop) => {
   return (

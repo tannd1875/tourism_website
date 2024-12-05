@@ -55,13 +55,13 @@ const Footer = () => {
               className="flex items-center w-14 hover:cursor-pointer"
               href="https://www.facebook.com/UIT.Fanpage"
             >
-              <img src="R.png" alt="Logo" />
+              <img src="Facebook_logo.png" alt="Logo" />
             </a>
             <a
               className="flex items-center w-20 hover:cursor-pointer"
               href="https://www.youtube.com/@uitchannel"
             >
-              <img src="ytb.png" alt="Logo" />
+              <img src="Youtube_logo.png" alt="Logo" />
             </a>
           </div>
         </div>

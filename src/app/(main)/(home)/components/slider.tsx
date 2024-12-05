@@ -2,58 +2,45 @@
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ListDirection from "./list-direction";
 import ListTips from "./list-tips";
-interface Prop {
-  slideList: object[];
-  autoSlide: boolean;
-  autoSlideInterval: number;
-  type: string;
-}
+import { SliderType } from "@/lib/type";
 
-const Slider = ({
-  slideList: slides,
-  autoSlide = true,
-  autoSlideInterval = 500,
-  type,
-}: Prop) => {
-  const [curr, setCurr] = useState(0);
+const Slider = ({ slideList, type }: SliderType) => {
+  const [curr, setCurr] = useState<number>(0);
 
   const prev = () =>
-    setCurr((curr) => (curr === 0 ? slides.length - 3 : curr - 1));
+    setCurr((curr) => (curr === 0 ? slideList.length - 3 : curr - 1));
   const next = () =>
-    setCurr((curr) => (curr === slides.length - 4 ? 0 : curr + 1));
+    setCurr((curr) => (curr === slideList.length - 4 ? 0 : curr + 1));
 
-  useEffect(() => {
-    if (!autoSlide) return;
-    const slideInterval = setInterval(next, autoSlideInterval);
-    return () => clearInterval(slideInterval);
-  }, []);
   return (
-    <div className="relative overflow-hidden mb-4">
+    <div className="relative overflow-hidden mb-4 border-y-2">
       <button
         onClick={prev}
-        className="absolute z-10 w-8 h-8 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white top-1/2 ml-4"
+        className="absolute z-10 w-8 h-16 rounded shadow bg-stone-300 text-gray hover:bg-white top-1/2 ml-4"
       >
         <FontAwesomeIcon icon={faChevronLeft} className="w-6" />
       </button>
       <button
         onClick={next}
-        className="absolute z-10 w-8 h-8 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white top-1/2 mr-4 right-0"
+        className="absolute z-10 w-8 h-16 rounded shadow bg-stone-300 text-gray-800 hover:bg-white top-1/2 mr-4 right-0"
       >
         <FontAwesomeIcon icon={faChevronRight} className="w-6" />
       </button>
       <div
         className="flex transition-transform duration-500 w-max"
         style={{
-          transform: `translateX(-${(curr * 98 + curr * 2) / slides.length}%)`,
+          transform: `translateX(-${
+            (curr * 98 + curr * 3) / slideList.length
+          }%)`,
         }}
       >
         {type == "tip" ? (
-          <ListTips ListTip={slides}></ListTips>
+          <ListTips ListTip={slideList}></ListTips>
         ) : (
-          <ListDirection ListDir={slides}></ListDirection>
+          <ListDirection directions={slideList}></ListDirection>
         )}
       </div>
     </div>

@@ -1,13 +1,13 @@
+import { tipType } from "@/lib/type";
 import React from "react";
 
-interface Prop {
-  items: object[];
-}
+type Prop = {
+  items: tipType[];
+};
 
 const TipsList = ({ items }: Prop) => {
-  const type = "tip";
   return (
-    <div>
+    <>
       {items.map((item, index) => (
         <div
           key={index}
@@ -24,14 +24,14 @@ const TipsList = ({ items }: Prop) => {
             <p className="lg:text-2xl text-xl font-semibold">{item.title}</p>
             <a
               className="block w-1/3 text-center max-sm:w-36 lg:text-2xl text-xl lg:bg-gray-500 text-white lg:p-6 p-4 mt-4 rounded-md lg:hover:bg-amber-500 bg-amber-500"
-              href={`/information?title=${item.title}&type=tip`}
+              href={`/information?id=${item._id}&type=tip`}
             >
               Xem thêm
             </a>
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };
 

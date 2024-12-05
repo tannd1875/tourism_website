@@ -1,11 +1,8 @@
-import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 
 const SearchBox = () => {
-  const router = useRouter();
-  const [addressValue, setAddressValue] = useState("");
-  const [directionValue, setDirectionValue] = useState("");
-  const [submit, setSubmit] = useState(false);
+  const [addressValue, setAddressValue] = useState<string>("");
+  const [directionValue, setDirectionValue] = useState<string>("");
   return (
     <div className="text-xl py-20 px-12 bg-gradient-to-r from-green-300 to-emerald-500 lg:mt-28 max-sm:pt-36 relative">
       <h1 className="mb-6 font-bold text-2xl text-center">
@@ -16,13 +13,14 @@ const SearchBox = () => {
           className="lg:w-1/6 p-4 hover:cursor-pointer w-full"
           name="city"
           id="city"
+          defaultValue={"None"}
           onChange={(e: ChangeEvent<HTMLSelectElement>) => {
             {
               setAddressValue(e.target.value);
             }
           }}
         >
-          <option value="" selected disabled hidden>
+          <option value="None" disabled hidden>
             Tỉnh/ Thành
           </option>
           <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
@@ -53,13 +51,6 @@ const SearchBox = () => {
           Tìm kiếm
         </a>
       </div>
-      {/* <div>
-        {addressValue == "" && submit ? (
-          <p className="text-red-500 text-center mt-4 absolute left-0 right-0">
-            Vui lòng nhập thông tin địa điểm!
-          </p>
-        ) : null}
-      </div> */}
     </div>
   );
 };

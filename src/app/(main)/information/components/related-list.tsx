@@ -1,22 +1,42 @@
-import React from "react";
+import { directionType, tipType } from "@/lib/type";
+import React, { useEffect, useState } from "react";
 
 interface Prop {
+  currInfo: string;
   title: string;
   type: string;
-  relatedList: string[];
 }
 
-const RelatedList = ({ title, type, relatedList }: Prop) => {
+const RelatedList = ({ currInfo, title, type }: Prop) => {
+  const [data, setData] = useState<Array<directionType | tipType>>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5001/${type}`);
+        if (!response.ok) {
+          throw new Error("Fail to get Data");
+        }
+        const data: Array<directionType | tipType> = await response.json();
+        const newData = data.filter((dt) => dt.title != currInfo).slice(0, 3);
+        setData(newData);
+      } catch (error) {
+        throw new Error("Fail to get Data");
+      }
+    };
+    getData();
+  }, [currInfo, type]);
+  console.log(data);
   return (
     <div className="w-2/3">
       <p className="text-xl text-l font-bold mb-4">{title}</p>
-      {relatedList.map((item, index) => (
+      {data.map((dt) => (
         <a
-          key={index}
+          key={dt._id}
           className="text-xl mb-2 text-justify hover:cursor-pointer hover:underline block"
-          href={`/information?title=${item}&type=${type}`}
+          href={`/information?id=${dt._id}&type=${type}`}
         >
-          {item}
+          {dt.title}
         </a>
       ))}
     </div>

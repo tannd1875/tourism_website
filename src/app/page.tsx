@@ -1,59 +1,49 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import React, { useEffect, useState } from "react";
-import Header from "./component/header";
 import SearchBox from "./(main)/(home)/components/search-box";
 import Slider from "./(main)/(home)/components/slider";
-import Footer from "./component/footer";
 import { useRouter } from "next/navigation";
+import { directionType, tipType } from "../lib/type";
 
 const page = () => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [directionList, setDirectionList] = useState((): object[] => {
-    fetch("http://localhost:8080/direction")
-      .then((response) => response.json())
-      .then((data) => {
-        setDirectionList(handleDirectionList(data));
-        return data;
-      });
-    return [];
-  });
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [tipsList, setTipsList] = useState((): object[] => {
-    fetch("http://localhost:8080/tip")
-      .then((response) => response.json())
-      .then((data) => {
-        setTipsList(handleTipsList(data));
-        return data;
-      });
-    return [];
-  });
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [directionList, setDirectionList] = useState<directionType[]>([]);
+  const [tipList, setTipList] = useState<tipType[]>([]);
   const router = useRouter();
 
-  const handleDirectionList = (directionList: object[]): object[] => {
-    return directionList.map((direction) => {
-      return {
-        title: direction.title,
-        address: direction.address,
-        cover: direction.images[0],
-        classify: direction.classify,
-        price: direction.price,
-      };
-    });
-  };
+  useEffect(() => {
+    const getDirectionList = async (): Promise<any> => {
+      try {
+        const response = await fetch("http://localhost:5001/direction");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch directions: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setDirectionList(data);
+      } catch (error: any) {
+        throw new Error("Failed to fetch directions: " + error.message);
+      }
+    };
 
-  const handleTipsList = (tipsList: object[]) => {
-    return tipsList.map((tip) => {
-      return {
-        name: tip.title,
-        cover: tip.images[0],
-      };
-    });
-  };
+    const getTipList = async (): Promise<any> => {
+      try {
+        const response = await fetch("http://localhost:5001/tip");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch directions: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setTipList(data);
+      } catch (error: any) {
+        throw new Error("Failed to fetch directions: " + error.message);
+      }
+    };
+
+    getDirectionList();
+    getTipList();
+  }, []);
 
   return (
     <>
-      <Header></Header>
       <div className="lg:w-4/5 m-auto">
         <SearchBox></SearchBox>
         <div className="my-12">
@@ -68,12 +58,7 @@ const page = () => {
           >
             Xem thêm
           </button>
-          <Slider
-            slideList={directionList}
-            autoSlide={false}
-            autoSlideInterval={2000}
-            type={"direction"}
-          ></Slider>
+          <Slider slideList={directionList} type={"direction"}></Slider>
         </div>
         <div className="my-12">
           <h1 className="text-center text-3xl font-bold uppercase">
@@ -87,15 +72,9 @@ const page = () => {
           >
             Xem thêm
           </button>
-          <Slider
-            slideList={tipsList}
-            autoSlide={false}
-            autoSlideInterval={3000}
-            type={"tip"}
-          ></Slider>
+          <Slider slideList={tipList} type={"tip"}></Slider>
         </div>
       </div>
-      <Footer></Footer>
     </>
   );
 };

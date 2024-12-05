@@ -1,25 +1,26 @@
 import React from "react";
 
-interface Prop {
-  name: string;
-  cover: string;
-}
+type Prop = {
+  title: string;
+  image: string;
+  id: string;
+};
 
-const SugTip = ({ name, cover }: Prop) => {
+const SugTip = ({ title, image, id }: Prop) => {
   return (
     <a
-      className="transition-all duration-200 w-72 rounded my-4 hover:scale-105"
-      href={`/information?title=${name}&type=tip`}
+      className="transition-all duration-200 w-80 rounded my-4 hover:scale-105"
+      href={`/information?id=${id}&type=tip`}
     >
       <div className="w-64 h-64 overflow-hidden mx-auto rounded-md">
         <img
           className="w-full h-full object-cover rounded-md"
-          src={cover}
-          alt={name}
+          src={image}
+          alt={title}
         />
       </div>
       <div className="text-xl mx-4 mb-4 mt-8">
-        <h1 className="font-bold mb-2 truncate">{name}</h1>
+        <h1 className="font-bold mb-2 truncate">{title}</h1>
       </div>
     </a>
   );

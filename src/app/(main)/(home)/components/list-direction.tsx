@@ -1,21 +1,24 @@
 import React from "react";
 import SugDirection from "./sugguested-direction";
+import { directionType } from "@/lib/type";
 
-interface Prop {
-  ListDir: object[];
-}
-const ListDirection = (prop: Prop) => {
+type Props = {
+  directions: directionType[];
+};
+
+const ListDirection = ({ directions }: Props) => {
   return (
-    <div className="flex justify-start gap-10 lg:gap-6 items-center overflow-hidden lg:-ml-1 ml-12">
-      {prop.ListDir.map((Dir, index) => (
+    <div className="flex justify-start lg:gap-6 items-center overflow-hidden lg:-ml-1 ml-8">
+      {directions.map((direction) => (
         <SugDirection
-          key={index}
-          name={Dir.title}
-          address={Dir.address}
-          classify={Dir.classify}
+          key={direction._id}
+          id={direction._id}
+          name={direction.title}
+          address={direction.address}
+          classify={direction.classify}
           score={5}
-          price={Dir.price}
-          cover={Dir.cover}
+          price={direction.price}
+          image={direction.images[0]}
         ></SugDirection>
       ))}
     </div>

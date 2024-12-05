@@ -1,17 +1,10 @@
 "use client";
 import React, { ChangeEvent } from "react";
 
-interface Props {
+type Props = {
   count: number;
   sortValue: string;
   handleSort: (e: ChangeEvent<HTMLSelectElement>) => void;
-}
-
-const ColorClassify = {
-  "Danh lam thắng cảnh": "bg-teal-400",
-  "Di tích lịch sử": "bg-rose-400",
-  "Khu vui chơi giải trí": "bg-purple-400",
-  "Trung tâm thương mại": "bg-blue-400",
 };
 
 const Heading = ({ count, sortValue, handleSort }: Props) => {

@@ -1,10 +1,10 @@
-import { faFilter, faL } from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 
-interface Prop {
+type Prop = {
   onSubmitFilter: (filteredList: Array<string>) => void;
-}
+};
 
 const FilterBox = ({ onSubmitFilter }: Prop) => {
   const [activeFilter, setActiveFilter] = useState(false);
