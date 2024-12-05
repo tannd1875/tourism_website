@@ -40,13 +40,6 @@ const SearchBox = () => {
         <a
           className="lg:w-1/6 bg-green-300 p-4 rounded font-bold hover:cursor-pointer text-center"
           href={`/direction-list?direction=${directionValue}&address=${addressValue}`}
-          // onClick={() => {
-          //   setSubmit(true);
-          //   if (addressValue)
-          //     router.push(
-          //       `/direction-list?direction=${directionValue}&address=${addressValue}`
-          //     );
-          // }}
         >
           Tìm kiếm
         </a>

@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import Heading from "./components/heading";
 import TipsList from "./components/tips-list";
 import Pagination from "../direction-list/components/pagination";
-import { getData } from "./components/data";
+import { manageDataOnTipPage } from "@/lib/helpers";
 import { tipType } from "@/lib/type";
+import { fetchTipList } from "@/lib/api";
 
 const TipsPage = () => {
   //handle full data
@@ -18,23 +19,17 @@ const TipsPage = () => {
 
   useEffect(() => {
     const getTipData = async () => {
-      try {
-        const response = await fetch("http://localhost:5001/tip");
-        if (!response.ok) {
-          throw new Error("Fail to get Data");
-        }
-        const data: Array<tipType> = await response.json();
-        setRawData(data);
-      } catch (error) {}
+      const data = await fetchTipList();
+      setRawData(data);
+      setTipLists(manageDataOnTipPage(data, 1, limit));
     };
     getTipData();
-    setTipLists(getData(rawData, 1, 5));
   }, [rawData, page]);
 
   const handlePageChange = (value: number) => {
-    const newData = getData(rawData, value, limit);
+    const dataOnPage = manageDataOnTipPage(rawData, value, limit);
     setPage(value);
-    setTipLists(newData);
+    setTipLists(dataOnPage);
   };
   return (
     <>

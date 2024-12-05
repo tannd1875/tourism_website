@@ -3,10 +3,15 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import FilterBox from "./components/filer-box";
 import Heading from "./components/heading";
 import DirectionList from "./components/direction-list";
-import { getData, getLength, getDataFiltered } from "./components/data";
+import {
+  manageDataOnDirectionPage,
+  getLength,
+  getDataFiltered,
+} from "@/lib/helpers";
 import Pagination from "./components/pagination";
 import { useSearchParams } from "next/navigation";
 import { directionType } from "@/lib/type";
+import { fetchDirectionList } from "@/lib/api";
 
 const DirectionListPage = () => {
   const searchParam = useSearchParams();
@@ -24,7 +29,7 @@ const DirectionListPage = () => {
   const [sort, setSort] = useState("");
 
   //handle direction list on page
-  const [directionList, setDirectionList] = useState<directionType[]>([]);
+  const [directionList, setDirectionList] = useState<Array<directionType>>([]);
   const [lengthOfResult, setLengthOfResult] = useState(0);
 
   useEffect(() => {
@@ -35,21 +40,14 @@ const DirectionListPage = () => {
       URL = `http://localhost:5001/direction/title/?title=${directionParam}`;
     } else URL = `http://localhost:5001/direction`;
 
-    const fetchData = async () => {
-      try {
-        const response = await fetch(URL);
-        if (!response.ok) {
-          throw new Error("Fail to get Data");
-        }
-        const data: Array<directionType> = await response.json();
-        setRawData(data);
-        setDirectionList(getData(data, 1, limit));
-        setLengthOfResult(getLength(data));
-      } catch (error) {
-        throw new Error("Fail to get Data");
-      }
+    const getData = async () => {
+      const data = await fetchDirectionList(URL);
+      setRawData(data);
+      setDirectionList(manageDataOnDirectionPage(data, 1, limit));
+      setLengthOfResult(getLength(data));
+      console.log(data);
     };
-    fetchData();
+    getData();
   }, [addressParam, directionParam]);
 
   const handleSort = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -83,7 +81,7 @@ const DirectionListPage = () => {
   };
 
   const handlePageChange = (value: number) => {
-    const newData = getData(rawData, value, limit);
+    const newData = manageDataOnDirectionPage(rawData, value, limit);
     setPage(value);
     setDirectionList(newData);
   };
@@ -92,21 +90,19 @@ const DirectionListPage = () => {
     if (filteredList[0] != "Reset") {
       // reset filter
       if (!filteredList.length) {
-        setDirectionList(getData(rawData, 1, limit));
+        setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
       }
 
       const filterResult = getDataFiltered(rawData, filteredList);
       setDirectionList(filterResult);
       setLengthOfResult(filterResult.length);
-    }
-
-    // } else if (filteredList[0] == "NoAction") return;
-    else {
+    } else {
       // no use filter
-      setDirectionList(getData(rawData, 1, limit));
+      setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
       setLengthOfResult(getLength(rawData));
     }
   };
+
   return (
     <>
       <div className="mt-28 lg:w-4/5 mx-auto w-full">

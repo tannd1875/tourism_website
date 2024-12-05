@@ -1,9 +1,9 @@
 import React from "react";
 
-interface Prop {
+type Prop = {
   images: Array<string>;
   description: Array<string>;
-}
+};
 
 const InfoDetail = ({ images, description }: Prop) => {
   const mergeData = (description: Array<string>, images: Array<string>) => {

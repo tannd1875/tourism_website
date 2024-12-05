@@ -1,11 +1,11 @@
 import { directionType, tipType } from "@/lib/type";
 import React, { useEffect, useState } from "react";
 
-interface Prop {
+type Prop = {
   currInfo: string;
   title: string;
   type: string;
-}
+};
 
 const RelatedList = ({ currInfo, title, type }: Prop) => {
   const [data, setData] = useState<Array<directionType | tipType>>([]);

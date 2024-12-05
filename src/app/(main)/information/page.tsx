@@ -6,6 +6,7 @@ import RelatedList from "./components/related-list";
 
 import { useSearchParams } from "next/navigation";
 import { directionType, tipType } from "@/lib/type";
+import { fetchInformation } from "@/lib/api";
 
 const InformationDetailPage = () => {
   const searchParam = useSearchParams();
@@ -14,19 +15,9 @@ const InformationDetailPage = () => {
   const [data, setData] = useState<directionType | tipType>();
 
   useEffect(() => {
+    const URL = `http://localhost:5001/${typeParam}/${idParam}`;
     const getData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5001/${typeParam}/${idParam}`
-        );
-        if (!response.ok) {
-          throw new Error("Fail to get Data");
-        }
-        const data = await response.json();
-        setData(data);
-      } catch (error) {
-        throw new Error("Fail to get Data");
-      }
+      setData(await fetchInformation(URL));
     };
 
     getData();

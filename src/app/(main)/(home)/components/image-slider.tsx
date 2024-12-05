@@ -3,11 +3,11 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
-interface Prop {
+type Prop = {
   images: string[];
   autoSlide: boolean;
   autoSlideInterval: number;
-}
+};
 function ImageSlide({
   images: slides,
   autoSlide = false,

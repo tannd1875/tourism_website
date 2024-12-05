@@ -81,7 +81,7 @@ const FilterBox = ({ onSubmitFilter }: Prop) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
     setClickSubmit(true);
     if (activeFilter) {
       if (e.target.value == "Filter") {

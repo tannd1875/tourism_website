@@ -5,6 +5,7 @@ import SearchBox from "./(main)/(home)/components/search-box";
 import Slider from "./(main)/(home)/components/slider";
 import { useRouter } from "next/navigation";
 import { directionType, tipType } from "../lib/type";
+import { fetchDirectionList, fetchTipList } from "../lib/api";
 
 const page = () => {
   const [directionList, setDirectionList] = useState<directionType[]>([]);
@@ -12,34 +13,11 @@ const page = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const getDirectionList = async (): Promise<any> => {
-      try {
-        const response = await fetch("http://localhost:5001/direction");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch directions: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setDirectionList(data);
-      } catch (error: any) {
-        throw new Error("Failed to fetch directions: " + error.message);
-      }
+    const getData = async () => {
+      setDirectionList(await fetchDirectionList());
+      setTipList(await fetchTipList());
     };
-
-    const getTipList = async (): Promise<any> => {
-      try {
-        const response = await fetch("http://localhost:5001/tip");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch directions: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setTipList(data);
-      } catch (error: any) {
-        throw new Error("Failed to fetch directions: " + error.message);
-      }
-    };
-
-    getDirectionList();
-    getTipList();
+    getData();
   }, []);
 
   return (
