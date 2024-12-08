@@ -7,7 +7,7 @@ type Prop = {
   item: directionType;
 };
 
-const ColorClassify = {
+const ColorClassify: { [index: string]: any } = {
   "Danh lam thắng cảnh": "bg-teal-400",
   "Di tích lịch sử": "bg-rose-400",
   "Khu vui chơi giải trí": "bg-purple-400",

@@ -46,7 +46,7 @@ const page = () => {
           <button
             className="block mx-auto my-4 border-2 rounded py-4 px-8 text-xl uppercase bg-orange-300 text-white hover:scale-105 hover:font-semibold transition-transform duration-300"
             type="button"
-            onClick={() => router.push("/tips")}
+            onClick={() => router.push("/tip")}
           >
             Xem thêm
           </button>

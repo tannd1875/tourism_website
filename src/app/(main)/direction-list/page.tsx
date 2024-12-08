@@ -1,17 +1,15 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterBox from "./components/filer-box";
 import Heading from "./components/heading";
 import DirectionList from "./components/direction-list";
-import {
-  manageDataOnDirectionPage,
-  getLength,
-  getDataFiltered,
-} from "@/lib/helpers";
+import { manageDataOnDirectionPage, getDataFiltered } from "@/lib/helpers";
 import Pagination from "./components/pagination";
 import { useSearchParams } from "next/navigation";
 import { directionType } from "@/lib/type";
 import { fetchDirectionList } from "@/lib/api";
+import { DirectionHeadingContext } from "@/lib/context/headingContext";
+import { DirectionFilterContext } from "@/lib/context/filterContext";
 
 const DirectionListPage = () => {
   const searchParam = useSearchParams();
@@ -21,17 +19,25 @@ const DirectionListPage = () => {
   // all direction => context
   const [rawData, setRawData] = useState<Array<directionType>>([]);
 
-  //handle page, limit of page is 5
+  //handle page, pagination limit of page is 5
   const [page, setPage] = useState(1);
   const limit = 5;
 
   // sort state
-  const [sort, setSort] = useState("");
+  const [sortBy, setSortBy] = useState("");
 
   //handle direction list on page
   const [directionList, setDirectionList] = useState<Array<directionType>>([]);
-  const [lengthOfResult, setLengthOfResult] = useState(0);
+  const [count, setCount] = useState(0);
 
+  //handle filter
+  const [classifyBy, setClassifyBy] = useState<Array<string>>([]);
+  const [locationBy, setLocationBy] = useState<Array<string>>([]);
+  const [isActiveFilter, setIsActiveFilter] = useState(false);
+  const [isResetFilter, setIsResetFilter] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  // fetching data base on params
   useEffect(() => {
     let URL = "";
     if (addressParam && directionParam) {
@@ -44,41 +50,68 @@ const DirectionListPage = () => {
       const data = await fetchDirectionList(URL);
       setRawData(data);
       setDirectionList(manageDataOnDirectionPage(data, 1, limit));
-      setLengthOfResult(getLength(data));
-      console.log(data);
+      setCount(data.length);
     };
     getData();
   }, [addressParam, directionParam]);
 
-  const handleSort = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedSort = e.target.value;
-    setSort(selectedSort);
-    const sortedList = [...directionList];
-    if (selectedSort === "Tên") {
-      sortedList.sort((a, b) => {
-        if (a.title < b.title) {
-          return -1;
-        } else if (a.title > b.title) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    }
+  // every time sortByValue change => data on page change
+  useEffect(() => {
+    const handleSort = () => {
+      const sortedList = [...directionList];
+      if (sortBy === "Tên") {
+        sortedList.sort((a, b) => {
+          if (a.title < b.title) {
+            return -1;
+          } else if (a.title > b.title) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      }
 
-    if (selectedSort === "Giá tiền") {
-      sortedList.sort((a, b) => {
-        if (a.price < b.price) {
-          return -1;
-        } else if (a.price > b.price) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      if (sortBy === "Giá tiền") {
+        sortedList.sort((a, b) => {
+          if (a.price < b.price) {
+            return -1;
+          } else if (a.price > b.price) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      }
+      setDirectionList(sortedList);
+      setCount(directionList.length);
+    };
+    handleSort();
+  }, [sortBy]);
+
+  //handle filter
+  useEffect(() => {
+    const filteredList = [classifyBy, locationBy];
+    const handleFilter = (filteredList: string[][]) => {
+      console.log(filteredList);
+      if (filteredList) {
+        const filterResult = getDataFiltered(rawData, filteredList);
+        setDirectionList(filterResult);
+        setCount(filterResult.length);
+        console.log(filterResult);
+        setIsSubmit(false);
+      } else {
+        setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
+        setCount(rawData.length);
+      }
+    };
+    if (isSubmit) {
+      handleFilter(filteredList);
     }
-    setDirectionList(sortedList);
-  };
+    if (isResetFilter) {
+      setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
+      setCount(rawData.length);
+    }
+  }, [isSubmit, isResetFilter]);
 
   const handlePageChange = (value: number) => {
     const newData = manageDataOnDirectionPage(rawData, value, limit);
@@ -86,41 +119,40 @@ const DirectionListPage = () => {
     setDirectionList(newData);
   };
 
-  const handleFilter = (filteredList: Array<string>) => {
-    if (filteredList[0] != "Reset") {
-      // reset filter
-      if (!filteredList.length) {
-        setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
-      }
-
-      const filterResult = getDataFiltered(rawData, filteredList);
-      setDirectionList(filterResult);
-      setLengthOfResult(filterResult.length);
-    } else {
-      // no use filter
-      setDirectionList(manageDataOnDirectionPage(rawData, 1, limit));
-      setLengthOfResult(getLength(rawData));
-    }
-  };
-
   return (
     <>
       <div className="mt-28 lg:w-4/5 mx-auto w-full">
-        <Heading
-          count={lengthOfResult}
-          sortValue={sort}
-          handleSort={handleSort}
-        ></Heading>
+        <DirectionHeadingContext.Provider
+          value={{ count, setCount, sortBy, setSortBy }}
+        >
+          <Heading></Heading>
+        </DirectionHeadingContext.Provider>
+
         <div className="lg:flex lg:justify-between lg:items-start lg:flex-1">
-          <FilterBox onSubmitFilter={handleFilter}></FilterBox>
+          <DirectionFilterContext.Provider
+            value={{
+              classifyBy,
+              setClassifyBy,
+              locationBy,
+              setLocationBy,
+              isActiveFilter,
+              setIsActiveFilter,
+              isResetFilter,
+              setIsResetFilter,
+              isSubmit,
+              setIsSubmit,
+            }}
+          >
+            <FilterBox></FilterBox>
+          </DirectionFilterContext.Provider>
           <DirectionList items={directionList}></DirectionList>
         </div>
         <Pagination
           onPageChange={handlePageChange}
           currentPage={page}
-          end={page * limit > lengthOfResult ? lengthOfResult : page * limit}
-          length={lengthOfResult}
-          numberOfPage={Math.ceil(lengthOfResult / limit)}
+          end={page * limit > count ? count : page * limit}
+          length={count}
+          numberOfPage={Math.ceil(count / limit)}
           type={"địa điểm"}
         ></Pagination>
       </div>

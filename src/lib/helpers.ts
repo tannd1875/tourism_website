@@ -22,24 +22,35 @@ export const manageDataOnDirectionPage = (
   return array;
 };
 
-export const getDataFiltered = (
+const getDataFilteredByClassify = (
   data: Array<directionType>,
-  filterList: Array<string>
+  classifyList: Array<string>
 ): Array<directionType> => {
-  const filteredData = data.filter((location) => {
-    if (filterList[0].length == 0 && filterList[1].length != 0)
-      return filterList[1].includes(location.classify);
-    else if (filterList[0].length != 0 && filterList[1].length == 0)
-      return filterList[0].includes(location.address);
-    else
-      return (
-        filterList[1].includes(location.classify) &&
-        filterList[0].includes(location.address)
-      );
+  return data.filter((direction) => {
+    return classifyList.includes(direction.classify);
   });
-  return filteredData;
 };
 
-export const getLength = (data: Array<object>): number => {
-  return data.length;
+const getDataFilteredByLocation = (
+  data: Array<directionType>,
+  locationList: Array<string>
+): Array<directionType> => {
+  return data.filter((direction) => {
+    return locationList.includes(direction.address);
+  });
+};
+
+export const getDataFiltered = (
+  data: Array<directionType>,
+  filterList: string[][]
+): Array<directionType> => {
+  const filterByClassify = getDataFilteredByClassify(data, filterList[0]);
+  const filterByLocation = getDataFilteredByLocation(data, filterList[1]);
+  console.log(filterList[0], filterList[1]);
+  console.log(filterByClassify, filterByLocation);
+  if (filterList[1].length == 0) return filterByClassify;
+  if (filterList[0].length == 0) return filterByLocation;
+  return filterByClassify.filter((direction) =>
+    filterByLocation.includes(direction)
+  );
 };
